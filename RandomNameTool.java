@@ -38,7 +38,7 @@ public class RandomNameTool {
 	 *
 	 * @param event
 	 */
-	@Mod.PreInit
+	@Mod.EventHandler
 	public void modPreInit(FMLPreInitializationEvent event) {
 		// コンフィグを読み込む
 		cfg = new Configuration(event.getSuggestedConfigurationFile());
@@ -85,7 +85,7 @@ public class RandomNameTool {
 	 *
 	 * @param event
 	 */
-	@Mod.Init
+	@Mod.EventHandler
 	public void modInit(FMLInitializationEvent event) {
 		// 全体の有効
 		if (!isEnabled || (!isEnabledSword && !isEnabledHoe)) {
@@ -96,7 +96,7 @@ public class RandomNameTool {
 		try {
 			readNameList();
 		} catch (IOException e) {
-			FMLLog.log(Level.SEVERE, e, Reference.MOD_NAME + " Name File Read failed... ");
+			FMLLog.log(Level.SEVERE, Reference.MOD_NAME + " Name File Read failed... ");
 			return;
 		}
 
@@ -130,7 +130,7 @@ public class RandomNameTool {
 	 * @throws IOException
 	 */
 	private void readNameList() throws IOException {
-		/*
+		/**
 		 * もうちょっとこう 良いやりかたがありそうな気がするんだがどうだろう
 		 */
 		BufferedReader br = new BufferedReader(new FileReader(swordNameFile));
