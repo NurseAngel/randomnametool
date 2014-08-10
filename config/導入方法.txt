@@ -1,0 +1,6 @@
+
+1.extractme.zipを解凍する。
+2.zipをmodsディレクトリに入れる
+3.config/RandomNameTool.txtをconfigディレクトリに入れる
+4.起動して、剣と鍬のクラフト時に名前が変われば成功
+5.このファイルは要らないのでごみ箱へ

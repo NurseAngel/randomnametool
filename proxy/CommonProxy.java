@@ -1,4 +1,4 @@
-package mods.nurseangel.randomnametool.proxy;
+package com.github.nurseangel.randomnametool.proxy;
 
 public class CommonProxy
 {

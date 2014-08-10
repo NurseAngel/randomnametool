@@ -1,4 +1,4 @@
-package mods.nurseangel.randomnametool;
+package com.github.nurseangel.randomnametool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,17 +6,22 @@ import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import cpw.mods.fml.common.ICraftingHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 
 /**
  * アイテムをクラフトしたときに反応するハンドラ
+ *
+ * 1.7.10のハンドラはここら辺を参考
+ * https://github.com/reginn/Tutorial-Event/blob/master/src/main/java/com/sample
+ * /fml/player/SamplePlayerEventCore.java
  */
-public class RandomNameToolCraftingHandler implements ICraftingHandler {
+public class RandomNameToolCraftingHandler {
+
 	Random random = new Random();
 
 	private int minLength;
@@ -44,7 +49,8 @@ public class RandomNameToolCraftingHandler implements ICraftingHandler {
 	 * @param listSword
 	 * @param listParticle
 	 */
-	public RandomNameToolCraftingHandler(int minLength, int maxLength, List<String> listParticle, List<String> listSword, List<String> listSwordEnd,
+	public RandomNameToolCraftingHandler(int minLength, int maxLength, List<String> listParticle,
+			List<String> listSword, List<String> listSwordEnd,
 			List<String> listHoe, List<String> listHoeEnd) {
 		this.minLength = minLength; // 最小
 		this.maxLength = maxLength; // 最大
@@ -56,6 +62,20 @@ public class RandomNameToolCraftingHandler implements ICraftingHandler {
 		listParticleSize = listParticle.size();
 	}
 
+	/*
+	 * 作業台またはプレイヤーインベントリで作成されたアイテムを取得したときに呼ばれる.
+	 * (作業台またはプレイヤーインベントリの右側のスロットにあるアイテムを左クリックしたとき)
+	 * なおサーバーとクライアントで2回呼ばれる.
+	 */
+	@SubscribeEvent
+	public void onCraftedHook(PlayerEvent.ItemCraftedEvent event)
+	{
+		ItemStack itemStack = event.crafting;
+		EntityPlayer player = event.player;
+
+		onCrafting(player, itemStack);
+	}
+
 	/**
 	 * クラフトした
 	 *
@@ -63,11 +83,8 @@ public class RandomNameToolCraftingHandler implements ICraftingHandler {
 	 *            プレイヤー。EntityPlayerMP/EntityClientPlayerMPの二回
 	 * @param ItemStack
 	 *            クラフトしたアイテム
-	 * @param IInventory
-	 *            プレイヤーのインベントリ？
 	 */
-	@Override
-	public void onCrafting(EntityPlayer player, ItemStack itemStack, IInventory craftMatrix) {
+	public void onCrafting(EntityPlayer player, ItemStack itemStack) {
 		/*
 		 * 剣と鍬が対象
 		 */
@@ -122,7 +139,7 @@ public class RandomNameToolCraftingHandler implements ICraftingHandler {
 		// SSPかつサーバ側の処理であれば
 		if (!isSMP && player instanceof EntityPlayerMP) {
 			// EntityClientPlayerMPで設定した値を返す
-			itemStack.setItemName(this.itemName);
+			itemStack.setStackDisplayName(this.itemName);
 			return;
 		}
 
@@ -164,13 +181,13 @@ public class RandomNameToolCraftingHandler implements ICraftingHandler {
 			// SMPであれば
 			if (player instanceof EntityPlayerMP) {
 				// サーバ側の場合のみ変更する
-				itemStack.setItemName(itemNameLocal);
+				itemStack.setStackDisplayName(itemNameLocal);
 			} else {
 				// クライアント側は何もしない
 			}
 		} else {
 			// シングルであれば名前を設定し、かつインスタンスにも保存
-			itemStack.setItemName(itemNameLocal);
+			itemStack.setStackDisplayName(itemNameLocal);
 			this.itemName = itemNameLocal;
 		}
 	}
@@ -193,11 +210,4 @@ public class RandomNameToolCraftingHandler implements ICraftingHandler {
 		}
 	}
 
-	/**
-	 * 焼いた
-	 */
-	@Override
-	public void onSmelting(EntityPlayer player, ItemStack item) {
-		// なにもしない
-	}
 }

@@ -1,4 +1,4 @@
-package mods.nurseangel.randomnametool;
+package com.github.nurseangel.randomnametool;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,21 +6,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
-import mods.nurseangel.randomnametool.proxy.CommonProxy;
-import net.minecraftforge.common.Configuration;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.ICraftingHandler;
+import net.minecraftforge.common.config.Configuration;
+
+import com.github.nurseangel.randomnametool.proxy.CommonProxy;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class RandomNameTool {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
@@ -71,7 +68,7 @@ public class RandomNameTool {
 				minLength = maxLength;
 			}
 		} catch (Exception e) {
-			FMLLog.log(Level.SEVERE, Reference.MOD_NAME + "Config Load failed... ");
+
 		} finally {
 			cfg.save();
 		}
@@ -96,7 +93,6 @@ public class RandomNameTool {
 		try {
 			readNameList();
 		} catch (IOException e) {
-			FMLLog.log(Level.SEVERE, Reference.MOD_NAME + " Name File Read failed... ");
 			return;
 		}
 
@@ -112,8 +108,11 @@ public class RandomNameTool {
 		}
 
 		// ハンドラをセット
-		ICraftingHandler handler = new RandomNameToolCraftingHandler(minLength, maxLength, listParticle, listSword, listSwordEnd, listHoe, listHoeEnd);
-		GameRegistry.registerCraftingHandler(handler);
+
+		RandomNameToolCraftingHandler handler = new RandomNameToolCraftingHandler(minLength, maxLength, listParticle,
+				listSword, listSwordEnd, listHoe, listHoeEnd);
+		FMLCommonHandler.instance().bus().register(handler);
+
 	}
 
 	private List<String> listSword = new ArrayList<String>();

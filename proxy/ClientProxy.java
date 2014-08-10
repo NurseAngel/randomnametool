@@ -1,4 +1,4 @@
-package mods.nurseangel.randomnametool.proxy;
+package com.github.nurseangel.randomnametool.proxy;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
